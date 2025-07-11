@@ -1,14 +1,9 @@
-import openai
 import pyperclip
 import time
 import tkinter as tk
-from tkinter import messagebox
 import threading
 import platform
-import ai_client
-import util
-import dialog
-
+from src.util import create_dialog, chat, is_in_wechat
 
 class EnglishAssistant:
     def __init__(self):
@@ -26,7 +21,7 @@ class EnglishAssistant:
             3. 如果输入是 **中英混合** → 将所有内容统一翻译成英文,
             4. 保持口语化，无需解释过程，直接输出结果"""
 
-            response = ai_client.chat(
+            response = chat(
                 [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": text}
@@ -41,7 +36,7 @@ class EnglishAssistant:
         """显示建议的弹窗 - 确保在主线程执行"""
 
         def show():
-            dialog.create_dialog(original, suggestion)
+            create_dialog(original, suggestion)
 
         # 在主线程执行UI操作
         if self.root:
@@ -58,7 +53,7 @@ class EnglishAssistant:
             while self.running:
                 current_clipboard = pyperclip.paste()
 
-                if util.is_in_wechat():
+                if is_in_wechat():
                     if self.app_situation == 0:
                         self.app_situation = 1
                         self.last_clipboard = current_clipboard
